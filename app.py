@@ -6,6 +6,10 @@ from logger_config import setup_logger
 
 from rag_agent import agent_executable
 from storing_documents_vectorstore import building_vectorstore
+from dotenv import load_dotenv
+load_dotenv()
+
+faiss_path=os.environ.get("SPACE_KEY")
 
 app = Flask(__name__)
 redis_client = redis.StrictRedis(
@@ -19,7 +23,6 @@ logger = setup_logger("my_logger")
 # Example logs
 
 main_path=os.getcwd()
-faiss_path = "confluence"
 if not os.path.exists(os.path.join(main_path + faiss_path)):
     print("Building vector store...")
     building_vectorstore(os.path.join(main_path + faiss_path))
