@@ -1,0 +1,14 @@
+atlassian-python-api
+requests
+python-dotenv
+pymupdf 
+pandas 
+python-docx
+langchain
+langchain-community
+openai
+tiktoken
+faiss-cpu
+langchain_openai
+redis
+flask

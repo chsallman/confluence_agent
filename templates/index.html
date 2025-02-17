@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 80%;
+            height: 70%;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        }
+        .message {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background: #4A90E2;
+            color: white;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background: #E5E5EA;
+            color: black;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .input-container {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+        .input-container button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4A90E2;
+            color: white;
+            cursor: pointer;
+        }
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-top: 3px solid #4A90E2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            align-self: center;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        async function askQuestion() {
+        const question = document.getElementById("question").value;
+        if (!question) return;
+
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div class='message user-message'>${question}</div>`;
+        document.getElementById("question").value = "";
+
+        const loader = document.createElement("div");
+        loader.className = "loader";
+        chatBox.appendChild(loader);
+        loader.style.display = "inline-block";
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch("/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            loader.remove();
+
+            if (data.answer) {
+                // Convert Markdown to HTML using marked.js
+                const formattedAnswer = marked.parse(data.answer);
+                chatBox.innerHTML += `<div class='message bot-message'>${formattedAnswer}</div>`;
+            } else {
+                chatBox.innerHTML += `<div class='message bot-message'>Error: No response received</div>`;
+            }
+        } catch (error) {
+            console.error("Error fetching response:", error);
+            chatBox.innerHTML += `<div class='message bot-message'>Error: Failed to fetch response</div>`;
+        }
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    </script>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <div class="chat-container" id="chatBox"></div>
+    <div class="input-container">
+        <input type="text" id="question" placeholder="Ask something...">
+        <button onclick="askQuestion()">Send</button>
+    </div>
+</body>
+</html>
