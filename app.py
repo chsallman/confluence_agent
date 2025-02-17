@@ -23,11 +23,17 @@ logger = setup_logger("my_logger")
 # Example logs
 
 main_path=os.getcwd()
-if not os.path.exists(os.path.join(main_path + faiss_path)):
+if not os.path.exists(os.path.join(main_path ,faiss_path)):
     print("Building vector store...")
-    building_vectorstore(os.path.join(main_path + faiss_path))
+    store_status=building_vectorstore(os.path.join(main_path ,faiss_path))
 
-agent_executor = agent_executable(os.path.join(main_path + faiss_path))
+    if store_status is False:
+            print("Error: Vector store building failed. Check logs for details.")
+            exit(1)  # Exits the script with an error status
+
+
+
+agent_executor = agent_executable(os.path.join(main_path ,faiss_path))
 
 
 @app.route("/")
