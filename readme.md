@@ -56,7 +56,7 @@ Make sure you have Python installed on your system. You will also need to instal
 ### Workflow Overview
 The chatbot follows this process:
 1. **Data Extraction**: Fetches data from the specified Confluence space, including text, tables, and attachments.
-2. **Vector Storage**: Stores the extracted data in a vector database for efficient retrieval.
+2. **Vector Storage**: Stores extracted data in a vector database for efficient retrieval. The database name is read from the .env file as SPACE_KEY.
 3. **Retrieval & Querying**: Loads the stored data as a retrieval tool for an agent, enabling users to ask questions about the documents.
 4. **Response Generation**: The chatbot retrieves relevant content from the vector store and provides responses.
 
