@@ -57,7 +57,7 @@ def ask():
         logger.debug(f"Bot result {result}")
 
         redis_client.rpush("chat_history", f"User: {query}")
-        redis_client.rpush("chat_history", f"Bot: {result["output"]}")
+        redis_client.rpush("chat_history", f"Bot: {result['output']}")
 
         return jsonify({"answer": result["output"]})
     except Exception as e:
